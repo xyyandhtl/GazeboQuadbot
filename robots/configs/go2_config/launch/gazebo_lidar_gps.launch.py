@@ -34,7 +34,7 @@ def generate_launch_description():
     gait_config = os.path.join(config_pkg_share, "config/gait/gait.yaml")
     links_config = os.path.join(config_pkg_share, "config/links/links.yaml")
     default_model_path = os.path.join(descr_pkg_share, "xacro/robot_VLP.xacro")
-    default_world_path = os.path.join(config_pkg_share, "worlds/slope_with_pillar_2.world")
+    default_world_path = os.path.join(config_pkg_share, "worlds/standardrobots_factory.world")
 
     declare_use_sim_time = DeclareLaunchArgument(
         "use_sim_time",

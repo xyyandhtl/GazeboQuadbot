@@ -1,20 +1,31 @@
 # Gazebo Go2 Quadbot for 3D Autonomous Navigation
+This repository contains the Gazebo simulation environment and URDF description for the Go2 Quadbot robot, equipped with a Livox Mid-360 LiDAR sensor and GPS module.
 
 Forked from [gazebo_go2_simulation](https://github.com/dfl-rlab/gz_quadbot.git)
 Livox lidar simulation: 
 - [official_gazebo9_ros1](https://github.com/Livox-SDK/livox_laser_simulation)
 - [gazebo11_ros2_version](https://github.com/inkccc/mid360_simulation)
 
+Launch with:
+```bash
+ros2 launch go2_config gazebo_lidar_gps.launch.py
+```
+
 # Additional Features
 - **add gps sensor**: before running, set latitude_deg / longitude_deg / elevation / heading_deg in xx.world to set the gps origin
-- **add livox lidar**: 
-- **add more worlds**: 
+- **add livox lidar**: set lidar mounting pose in [xacro](robots/descriptions/go2_description/xacro/robot_VLP.xacro). If you don't need livox or velodyne, comment out the corresponding lines.
+- **add more worlds**: see [worlds](robots/configs/go2_config/worlds)
 
-| World | Scene Type |
-|-------|------|
-|slope_with_pillar_2 | outdoor, closure, multi floor, no stairs |
-|standardrobots_factory | indoor, closure, multi floor, stairs |
+| World | Scene Type | Overview |
+|-------|------|----------|
+|slope_with_pillar_2 | outdoor, closure, multi floor, no stairs | ![!)](assets/scene1.png) |
+|standardrobots_factory | indoor, closure, multi floor, stairs | not ready |
+|bigHHH | indoor, closure, multi room, no stairs | ![alt text](assets/scene2.png) |
 
+To control the robot from keyboard, new terminal run:
+```bash
+ros2 run teleop_twist_keyboard teleop_twist_keyboard
+```
 
 
 # Topics List
@@ -29,13 +40,14 @@ Livox lidar simulation:
 | /foot_contacts | champ_msgs/msg/ContactsStamped |
 | /gps/data | sensor_msgs/msg/NavSatFix |
 | /gps_plugin/vel | geometry_msgs/msg/Vector3Stamped |
-| /imu/data | sensor_msgs/msg/Imu |
 | /joint_group_effort_controller/controller_state | control_msgs/msg/JointTrajectoryControllerState |
 | /joint_group_effort_controller/joint_trajectory | trajectory_msgs/msg/JointTrajectory |
 | /joint_group_effort_controller/state | control_msgs/msg/JointTrajectoryControllerState |
 | /joint_group_effort_controller/transition_event | lifecycle_msgs/msg/TransitionEvent |
 | /joint_states | sensor_msgs/msg/JointState |
 | /joint_states_controller/transition_event | lifecycle_msgs/msg/TransitionEvent |
+| /livox/imu | sensor_msgs/msg/Imu |
+| /livox/lidar | sensor_msgs/msg/PointCloud2 |
 | /odom/raw | nav_msgs/msg/Odometry |
 | /parameter_events | rcl_interfaces/msg/ParameterEvent |
 | /performance_metrics | gazebo_msgs/msg/PerformanceMetrics |
@@ -44,3 +56,6 @@ Livox lidar simulation:
 | /tf | tf2_msgs/msg/TFMessage |
 | /tf_static | tf2_msgs/msg/TFMessage |
 | /velodyne_points | sensor_msgs/msg/PointCloud2 |
+
+The simulation already publishes the static tf within this robot and its sensor mounted on it:
+![alt text](assets/static_tf_tree.png)
