@@ -1,10 +1,13 @@
-# Gazebo Go2 Quadbot for 3D Autonomous Navigation
+# Gazebo Go2(W) Quadbot Simulation
 This repository contains the Gazebo simulation environment and URDF description for the Go2 Quadbot robot, equipped with a Livox Mid-360 LiDAR sensor and GPS module.
 
 Forked from [gazebo_go2_simulation](https://github.com/dfl-rlab/gz_quadbot.git)
-Livox lidar simulation: 
+
+Livox lidar simulation is based on: 
 - [official_gazebo9_ros1](https://github.com/Livox-SDK/livox_laser_simulation)
 - [gazebo11_ros2_version](https://github.com/inkccc/mid360_simulation)
+
+Running environment refer to: [gazebo_env_dockerfile](https://github.com/dfl-rlab/dddmr_navigation/blob/main/dddmr_docker/docker_file/Dockerfile_x64_gazebo)
 
 # Additional Features
 - **add gps sensor**: before running, set latitude_deg / longitude_deg / elevation / heading_deg in xx.world to set the gps origin

@@ -166,5 +166,5 @@ def generate_launch_description():
         ),
         # ros2_control_node,
         
-        rviz_node
+        # rviz_node
     ])
