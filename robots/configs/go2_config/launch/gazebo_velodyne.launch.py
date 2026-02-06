@@ -17,9 +17,9 @@ from launch.substitutions import Command, LaunchConfiguration
 
 def generate_launch_description():
 
-    use_sim_time = LaunchConfiguration("use_sim_time")
-    description_path = LaunchConfiguration("description_path")
-    base_frame = "base_link"
+    # use_sim_time = LaunchConfiguration("use_sim_time")
+    # description_path = LaunchConfiguration("description_path")
+    # base_frame = "base_link"
 
     config_pkg_share = launch_ros.substitutions.FindPackageShare(
         package="go2_config"

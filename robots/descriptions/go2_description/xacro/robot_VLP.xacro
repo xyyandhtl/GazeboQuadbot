@@ -125,6 +125,18 @@
     <xacro:leg name="lh" mirror="1"  mirror_dae="True"   front_hind="-1" front_hind_dae="False" />
 
     <xacro:include filename="$(find go2_description)/xacro/velodyne.xacro"/>
+    <xacro:include filename="$(find go2_description)/xacro/gps.xacro"/>
+    <!-- <xacro:include filename="$(find ros2_livox_simulation)/urdf/mid360.xacro"/> -->
+    <xacro:include filename="$(find mid360_simulation)/urdf/mid360.xacro"/> 
     <!-- <xacro:include filename="$(find go2_description)/xacro/laser.xacro"/> -->
+
+    <!-- GPS Sensor -->
+    <xacro:gps_sensor name="gps" parent_link="trunk">
+        <origin xyz="-0.1 0 0.06" rpy="0 0 0"/>
+    </xacro:gps_sensor>
+
+    <xacro:mid360 name="livox" parent="trunk">
+        <origin xyz="0 0 0.10" rpy="0 0 0"/>
+    </xacro:mid360>
 
 </robot>
