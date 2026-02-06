@@ -6,11 +6,6 @@ Livox lidar simulation:
 - [official_gazebo9_ros1](https://github.com/Livox-SDK/livox_laser_simulation)
 - [gazebo11_ros2_version](https://github.com/inkccc/mid360_simulation)
 
-Launch with:
-```bash
-ros2 launch go2_config gazebo_lidar_gps.launch.py
-```
-
 # Additional Features
 - **add gps sensor**: before running, set latitude_deg / longitude_deg / elevation / heading_deg in xx.world to set the gps origin
 - **add livox lidar**: set lidar mounting pose in [xacro](robots/descriptions/go2_description/xacro/robot_VLP.xacro). If you don't need livox or velodyne, comment out the corresponding lines.
@@ -19,8 +14,16 @@ ros2 launch go2_config gazebo_lidar_gps.launch.py
 | World | Scene Type | Overview |
 |-------|------|----------|
 |slope_with_pillar_2 | outdoor, closure, multi floor, no stairs | ![!)](assets/scene1.png) |
-|standardrobots_factory | indoor, closure, multi floor, stairs | not ready |
 |bigHHH | indoor, closure, multi room, no stairs | ![alt text](assets/scene2.png) |
+|building | indoor, closure, multi floor, stairs | not ready |
+
+Launch with:
+```bash
+# Go2 run
+ros2 launch go2_config go2_lidar_gps.launch.py
+# Go2w run
+ros2 launch go2w_config go2w_lidar_gps.launch.py
+```
 
 To control the robot from keyboard, new terminal run:
 ```bash
