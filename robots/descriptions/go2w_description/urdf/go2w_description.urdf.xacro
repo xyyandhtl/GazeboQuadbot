@@ -235,7 +235,7 @@
 
 
   <!-- Base-->
-  <link name="base"/>
+  <link name="base_link"/>
 
   <!-- Body -->
   <link name="body">
@@ -258,7 +258,7 @@
     </collision>
   </link>
   <joint name="body_joint" type="fixed">
-    <parent link="base" />
+    <parent link="base_link" />
     <child link="body" />
   </joint>
 
@@ -310,7 +310,7 @@
   <xacro:leg prefix="RR" front="False" left="False"/>
 
   <!-- IMU -->
-  <link name="imu">
+  <!-- <link name="imu">
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <mass value="0" />
@@ -378,10 +378,10 @@
         <initial_orientation_as_reference>false</initial_orientation_as_reference>
       </plugin>
     </sensor>
-  </gazebo>
+  </gazebo> -->
 
   <!-- Lidar -->
-  <link name="lidar">
+  <!-- <link name="lidar">
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <mass value="0" />
@@ -433,7 +433,7 @@
         <frame_name>lidar</frame_name>
       </plugin>
     </sensor>
-  </gazebo>
+  </gazebo> -->
 
 
 
@@ -599,8 +599,8 @@
       <origin xyz="-0.1 0 0.06" rpy="0 0 0"/>
   </xacro:gps_sensor>
 
-  <xacro:mid360 name="livox" parent="body">
-      <origin xyz="0 0 0.10" rpy="0 0 0"/>
+  <xacro:mid360 name="livox_frame" parent="body">
+      <origin xyz="0.25 0 0.13" rpy="0 0.4 0"/>
   </xacro:mid360>
 
 </robot>
