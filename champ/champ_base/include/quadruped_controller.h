@@ -62,9 +62,13 @@ class QuadrupedController: public rclcpp::Node
 
     rclcpp::TimerBase::SharedPtr loop_timer_;
     rclcpp::Clock clock_;
-    
+
     champ::Velocities req_vel_;
     champ::Pose req_pose_;
+
+    // Variables for velocity command timeout
+    rclcpp::Time last_cmd_vel_time_;
+    double cmd_vel_timeout_;
 
     champ::GaitConfig gait_config_;
 

@@ -40,13 +40,15 @@ QuadrupedController::QuadrupedController():
     clock_(*this->get_clock()),
     body_controller_(base_),
     leg_controller_(base_, rosTimeToChampTime(clock_.now())),
-    kinematics_(base_)
+    kinematics_(base_),
+    last_cmd_vel_time_(clock_.now()) // 初始化最后速度命令时间为当前时间
 {
     std::string joint_control_topic = "joint_group_position_controller/command";
     std::string knee_orientation;
     std::string urdf = "";
 
     double loop_rate = 200.0;
+    cmd_vel_timeout_ = 0.5; // 默认0.5秒超时时间，可根据需要调整
 
     this->get_parameter("gait.pantograph_leg",         gait_config_.pantograph_leg);
     this->get_parameter("gait.max_linear_velocity_x",  gait_config_.max_linear_velocity_x);
@@ -65,6 +67,7 @@ QuadrupedController::QuadrupedController():
     this->get_parameter("joint_controller_topic",      joint_control_topic);
     this->get_parameter("loop_rate",                   loop_rate);
     this->get_parameter("urdf",                        urdf);
+    this->get_parameter("cmd_vel_timeout",             cmd_vel_timeout_); // 添加获取参数
     
     cmd_vel_subscription_ = this->create_subscription<geometry_msgs::msg::Twist>(
         "cmd_vel/smooth", 10, std::bind(&QuadrupedController::cmdVelCallback_, this,  std::placeholders::_1));
@@ -100,6 +103,15 @@ QuadrupedController::QuadrupedController():
 
 void QuadrupedController::controlLoop_()
 {
+    // 检查是否超过速度命令超时时间
+    rclcpp::Time current_time = clock_.now();
+    if ((current_time - last_cmd_vel_time_).seconds() > cmd_vel_timeout_) {
+        // 重置速度为0
+        req_vel_.linear.x = 0.0;
+        req_vel_.linear.y = 0.0;
+        req_vel_.angular.z = 0.0;
+    }
+
     float target_joint_positions[12];
     geometry::Transformation target_foot_positions[4];
     bool foot_contacts[4];
@@ -118,6 +130,9 @@ void QuadrupedController::cmdVelCallback_(const geometry_msgs::msg::Twist::Share
     req_vel_.linear.x = msg->linear.x;
     req_vel_.linear.y = msg->linear.y;
     req_vel_.angular.z = msg->angular.z;
+
+    // 更新最后接收速度命令的时间
+    last_cmd_vel_time_ = clock_.now();
 }
 
 void QuadrupedController::cmdPoseCallback_(const geometry_msgs::msg::Pose::SharedPtr msg)

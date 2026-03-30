@@ -73,7 +73,7 @@ def generate_launch_description():
     )
 
     declare_orientation_from_imu = DeclareLaunchArgument(
-        "orientation_from_imu", default_value="false", description="Take orientation from IMU data"
+        "orientation_from_imu", default_value="true", description="Take orientation from IMU data"
     )
 
     declare_rviz = DeclareLaunchArgument(
@@ -185,6 +185,7 @@ def generate_launch_description():
             LaunchConfiguration('links_map_path'),
             LaunchConfiguration('gait_config_path'),
         ],
+        remappings=[("/imu/data", "/livox/imu")],
     )
 
     base_to_footprint_ekf = Node(
@@ -257,7 +258,7 @@ def generate_launch_description():
             declare_close_loop_odom,
             description_ld,
             quadruped_controller_node,
-            state_estimator_node,
+            # state_estimator_node,
             #base_to_footprint_ekf,
             #footprint_to_odom_ekf,
             rviz2
