@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="diff_bot">
+    <xacro:arg name="prefix" default="" />
+
+    <xacro:property name="footprint_radius" value="0.003"/>
+    <xacro:property name="base_radius" value="0.3"/>
+    <xacro:property name="base_length" value="0.24"/>
+    <xacro:property name="lidi" value="0.045"/>
+    <xacro:property name="base_joint_z" value="${base_length/2 + lidi}"/>
+    <xacro:property name="wheel_radius" value="0.0975"/>
+    <xacro:property name="wheel_length" value="0.045"/>
+    <xacro:property name="PI" value="3.141592653589793"/>
+    <xacro:property name="wheel_joint_Z" value="${-base_length/2 - lidi + wheel_radius}"/>
+    <xacro:property name="small_radius" value="0.0225"/>
+    <xacro:property name="small_jointz" value="${-base_length/2 - lidi + small_radius}"/>
+    <xacro:property name="mid360_z_above_top" value="0.045"/>
+    <!-- Mid-360：相对 base_link，+X 前、+Z 上；前倾为绕 Y 正方向俯仰 -->
+    <xacro:property name="mid360_forward_m" value="0.20"/>
+    <xacro:property name="mid360_pitch_deg" value="10.0"/>
+    <xacro:macro name="sphere_inertial_matrix" params="m r">
+        <inertial>
+            <mass value="${m}" />
+            <inertia ixx="${2*m*r*r/5}" ixy="0" ixz="0"
+                     iyy="${2*m*r*r/5}" iyz="0"
+                     izz="${2*m*r*r/5}" />
+        </inertial>
+    </xacro:macro>
+
+    <xacro:macro name="cylinder_inertial_matrix" params="m r h">
+        <inertial>
+            <mass value="${m}" />
+            <inertia ixx="${m*(3*r*r+h*h)/12}" ixy="0" ixz="0"
+                     iyy="${m*(3*r*r+h*h)/12}" iyz="0"
+                     izz="${m*r*r/2}" />
+        </inertial>
+    </xacro:macro>
+
+    <xacro:macro name="wheel_func" params="wheel_name flag">
+        <link name="$(arg prefix)${wheel_name}_wheel">
+            <visual>
+                <geometry>
+                    <cylinder radius="${wheel_radius}" length="${wheel_length}" />
+                </geometry>
+                <origin xyz="0 0 0" rpy="${PI/2} 0 0" />
+                <material name="wheel_color">
+                    <color rgba="0.15 0.15 0.15 1" />
+                </material>
+            </visual>
+            <collision>
+                <geometry>
+                    <cylinder radius="${wheel_radius}" length="${wheel_length}" />
+                </geometry>
+                <origin xyz="0 0 0" rpy="${PI/2} 0 0" />
+            </collision>
+            <xacro:cylinder_inertial_matrix m="9" r="${wheel_radius}" h="${wheel_length}" />
+        </link>
+        <joint name="$(arg prefix)base_link2_${wheel_name}" type="continuous">
+            <parent link="$(arg prefix)base_link" />
+            <child link="$(arg prefix)${wheel_name}_wheel"/>
+            <origin xyz="0 ${0.3 * flag} ${wheel_joint_Z}" />
+            <axis xyz="0 1 0" />
+        </joint>
+        <gazebo reference="$(arg prefix)${wheel_name}_wheel">
+            <mu1>1.4</mu1>
+            <mu2>1.4</mu2>
+        </gazebo>
+    </xacro:macro>
+
+    <xacro:macro name="small_wheel_func" params="small_wheel_name flag">
+        <link name="$(arg prefix)${small_wheel_name}_wheel">
+            <visual>
+                <geometry>
+                    <sphere radius="${small_radius}" />
+                </geometry>
+                <material name="caster_grey">
+                    <color rgba="0.4 0.4 0.4 1" />
+                </material>
+            </visual>
+            <collision>
+                <geometry>
+                    <sphere radius="${small_radius}" />
+                </geometry>
+            </collision>
+            <xacro:sphere_inertial_matrix m="0.72" r="${small_radius}" />
+        </link>
+        <joint name="$(arg prefix)${small_wheel_name}2base_link" type="continuous">
+            <parent link="$(arg prefix)base_link" />
+            <child link="$(arg prefix)${small_wheel_name}_wheel" />
+            <origin xyz="${0.2775 * flag} 0 ${small_jointz}" />
+            <axis xyz="0 1 0" />
+        </joint>
+    </xacro:macro>
+
+    <link name="$(arg prefix)base_footprint">
+        <visual>
+            <geometry>
+                <sphere radius="${footprint_radius}" />
+            </geometry>
+        </visual>
+    </link>
+
+    <link name="$(arg prefix)base_link">
+        <visual>
+            <geometry>
+                <cylinder radius="${base_radius}" length="${base_length}" />
+            </geometry>
+            <material name="body_blue">
+                <color rgba="0.15 0.35 0.85 1" />
+            </material>
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder radius="${base_radius}" length="${base_length}" />
+            </geometry>
+        </collision>
+        <xacro:cylinder_inertial_matrix m="18" r="${base_radius}" h="${base_length}" />
+    </link>
+    <gazebo reference="$(arg prefix)base_link">
+        <material>Gazebo/Blue</material>
+    </gazebo>
+
+    <joint name="$(arg prefix)base_link2base_footprint" type="fixed">
+        <parent link="$(arg prefix)base_footprint" />
+        <child link="$(arg prefix)base_link"/>
+        <origin xyz="0 0 ${base_joint_z}" />
+    </joint>
+
+    <xacro:wheel_func wheel_name="left" flag="1" />
+    <xacro:wheel_func wheel_name="right" flag="-1" />
+    <xacro:small_wheel_func small_wheel_name="front" flag="1" />
+    <xacro:small_wheel_func small_wheel_name="back" flag="-1" />
+
+    <!-- Livox Mid-360：与 go2w_description 相同插件与话题（/livox/lidar、/livox/imu） -->
+    <xacro:include filename="$(find robot_scene)/xacro/mid360.xacro"/>
+    <xacro:mid360 name="$(arg prefix)livox" parent="$(arg prefix)base_link">
+        <!-- 顶面 z = base_length/2；+ mid360_z_above_top 补偿 livox 网格下移并留出间隙 -->
+        <origin
+          xyz="${mid360_forward_m} 0 ${base_length/2 + mid360_z_above_top}"
+          rpy="0 ${mid360_pitch_deg * PI/180} 0"/>
+    </xacro:mid360>
+
+    <xacro:include filename="$(find robot_scene)/xacro/gps.xacro"/>
+    <xacro:gps_sensor name="gps" parent_link="$(arg prefix)base_link">
+        <origin xyz="-0.1 0 0.06" rpy="0 0 0"/>
+    </xacro:gps_sensor>
+
+    <gazebo>
+        <plugin name="$(arg prefix)diff_drive" filename="libgazebo_ros_diff_drive.so">
+            <left_joint>$(arg prefix)base_link2_left</left_joint>
+            <right_joint>$(arg prefix)base_link2_right</right_joint>
+            <wheel_separation>${base_radius * 2}</wheel_separation>
+            <wheel_diameter>${wheel_radius * 2}</wheel_diameter>
+            <max_wheel_torque>30</max_wheel_torque>
+            <max_wheel_acceleration>1.8</max_wheel_acceleration>
+            <update_rate>100</update_rate>
+            <publish_odom>true</publish_odom>
+            <publish_odom_tf>true</publish_odom_tf>
+            <publish_wheel_tf>true</publish_wheel_tf>
+            <odometry_frame>$(arg prefix)odom</odometry_frame>
+            <robot_base_frame>$(arg prefix)base_footprint</robot_base_frame>
+        </plugin>
+    </gazebo>
+</robot>
