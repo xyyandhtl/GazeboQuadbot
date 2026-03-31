@@ -71,9 +71,9 @@ install(DIRECTORY include/
 )
 
 # 安装 URDF 文件
-install(DIRECTORY urdf/
-  DESTINATION share/${PROJECT_NAME}/urdf
-)
+# install(DIRECTORY urdf/
+#   DESTINATION share/${PROJECT_NAME}/urdf
+# )
 
 # 安装 mesh 模型文件
 install(DIRECTORY meshes/
