@@ -12,13 +12,21 @@ Running environment refer to: [gazebo_env_dockerfile](https://github.com/dfl-rla
 # Additional Features
 - **add gps sensor**: before running, set latitude_deg / longitude_deg / elevation / heading_deg in xx.world to set the gps origin
 - **add livox lidar**: set lidar mounting pose in [xacro](robots/descriptions/go2_description/xacro/robot_VLP.xacro). If you don't need livox or velodyne, comment out the corresponding lines.
-- **add more worlds**: see [worlds](robots/configs/go2_config/worlds)
+- **add more worlds**: see [worlds](robot_scene/worlds)
 
 | World | Scene Type | Overview |
 |-------|------|----------|
 |slope_with_pillar_2 | outdoor, closure, multi floor, no stairs | ![!)](assets/scene1.png) |
 |bigHHH | indoor, closure, multi room, no stairs | ![alt text](assets/scene2.png) |
-|building | indoor, closure, multi floor, stairs | not ready |
+|see [worlds](robot_scene/worlds) |  |  |
+
+To use specific world with sdf resource, copy the following sdf model files
+- https://github.com/leonhartyao/gazebo_models_worlds_collection/tree/master/models
+
+to one of the following directories:
+- [robot_scene/models/](robot_scene/models)
+- ~/.gazebo/models/:
+
 
 Launch with:
 ```bash
