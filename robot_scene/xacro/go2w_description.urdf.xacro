@@ -598,7 +598,7 @@
       <origin xyz="-0.1 0 0.06" rpy="0 0 0"/>
   </xacro:gps_sensor>
 
-  <xacro:mid360 name="livox_frame" parent="body">
+  <xacro:mid360 name="livox" parent="body">
       <origin xyz="0.25 0 0.13" rpy="0 0.4 0"/>
   </xacro:mid360>
 

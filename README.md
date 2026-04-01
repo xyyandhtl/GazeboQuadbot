@@ -16,12 +16,13 @@ Running environment refer to: [gazebo_env_dockerfile](https://github.com/dfl-rla
 
 | World | Scene Type | Overview |
 |-------|------|----------|
-|slope_with_pillar_2 | outdoor, closure, multi floor, no stairs | ![!)](assets/scene1.png) |
-|bigHHH | indoor, closure, multi room, no stairs | ![alt text](assets/scene2.png) |
+|outdoor_slope | outdoor, closure, multi floor, no stairs | ![!)](assets/scene1.png) |
+|indoor_room1 | indoor, closure, multi room, no stairs | ![alt text](assets/scene2.png) |
 |see [worlds](robot_scene/worlds) |  |  |
 
 To use specific world with sdf resource, copy the following sdf model files
 - https://github.com/leonhartyao/gazebo_models_worlds_collection/tree/master/models
+- https://github.com/HongbiaoZ/autonomous_exploration_development_environment/tree/humble/src/vehicle_simulator/mesh
 
 to one of the following directories:
 - [robot_scene/models/](robot_scene/models)
@@ -57,5 +58,4 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 | /tf | tf2_msgs/msg/TFMessage |
 | /tf_static | tf2_msgs/msg/TFMessage |
 
-The simulation already publishes the static tf within this robot and its sensor mounted on it:
-![alt text](assets/static_tf_tree.png)
+The simulation already publishes the static tf within this robot and its sensor mounted on it.
